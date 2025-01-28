@@ -1,0 +1,11 @@
+# to exclude the csv files
+*.csv
+
+# to exclude the json files
+*.json
+
+# Ignore the ipynb_checkpoints directory
+.ipynb_checkpoints/
+
+docker/ny_taxi_postgres_data/
+docker/ny_taxi_postgres_datadata/
