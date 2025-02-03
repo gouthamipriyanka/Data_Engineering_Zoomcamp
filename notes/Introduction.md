@@ -370,6 +370,273 @@ The variables allow you to define variables that are common to use such as locat
 Refer the variables.tf file for examples. We can even add files to the variables and refer them in main.tf using functions.
 
 
+## SQL Refresher
+
+The , in the FROM clause means it is a simple inner join
+
+```SQL
+
+SELECT
+    *
+FROM
+    trips t,
+    zones zpu,
+    zones zdo
+WHERE
+    t."PULocationID" = zpu."LocationID" AND
+    t."DOLocationID" = zdo."LocationID"
+LIMIT 100;
+```
+
+See the columns in a postgres table
+
+```sql
+SELECT column_name, data_type
+FROM information_schema.columns
+WHERE table_name = '<table_name>';
+
+```
+
+Select the required columns, use the CONCAT function to add the 
+values together
+
+```sql
+SELECT 
+	lpep_pickup_datetime,
+	lpep_dropoff_datetime,
+	total_amount,
+	CONCAT(zpu."Borough",'/',zpu."Zone") AS "pickup_loc",
+	CONCAT(zdo."Borough",'/',zdo."Zone") AS "dropoff_loc"
+FROM green_trip_data t,
+	taxi_zones zpu,
+	taxi_zones zdo
+WHERE 
+	t."PULocationID" = zpu."LocationID" AND
+	t."DOLocationID" = zdo."LocationID"
+LIMIT 100 ;
+```
+
+Check if the yellow_taxi_trips has any null PULocationID and DOLocationID
+
+```sql
+
+SELECT *
+FROM green_trip_data t
+WHERE t."PULocationID" IS NULL OR
+      t."DOLocationID" IS NULL ;
+
+```
+
+DATE TRUNC and type casting as DATE difference
+date_trunc('datepart', field) removes the timestamp and makes it 00:00:00
+casting completely removes the timestamp and modifies the column to date
+```sql
+
+SELECT DATE_TRUNC('day', lpep_dropoff_datetime) as day, total_amount, passenger_count
+FROM green_trip_data
+
+SELECT CAST(lpep_dropoff_datetime as DATE), total_amount, passenger_count
+FROM green_trip_data ;
+```
+
+GROUP BY the records with date and display them in ORDER by day
+GROUP BY the records with date and display them in ORDER by count
+GROUP BY the MAX(total_amount) and MAX(passenger_count)
+GROUP BY the "DOLocationID" count ORDER BY day and DOLocationID
+
+
+## Setting up the environment on Google Cloud Platform(VM + SSH)
+
+1. In GIT BASH, create a .ssh folder if there is none before and type  
+
+```bash
+ssh-keygen -t rsa -f <keyname> -C <username>
+```
+A SSH key is generated and saved in the .ssh folder
+
+2. Go to console in GCP and select the Compute Engine > Metadata and add the SSH key by clicking on ADD SSH Key and copying the gcp.pub key to the console and save.
+
+To open the key in GIT BASH
+
+```bash
+CAT gcp.pub
+```
+
+3. Creating a VM instance in GCP:
+
+    * In the Compute Engine service > VM instances > Create instance
+
+    * Give the name, region, zone , select the series of machine you want, machine type in the machine configuration section.
+
+    * On the left sidebar then select the OS and storage and change the OS and the GB alloted if you want.
+
+    * For this instance this is the only config that we are worried about and click on create.
+
+4. SSH into VM:
+
+    * Use the command and the correct username in the config file to connect.
+
+    * ```bash
+      ssh -i ~/.ssh/keyname username@external-ip
+      ```
+5. htop - To see the CPU cores and memory
+   ls - to see the directory is empty
+   gcloud --version 
+   are the few commands that we initially tested.
+
+6. Download Anaconda using the "wget link"command. Copy the distribution and run the below command. Accept the terms and yes for the anaconda initializer.
+
+    ```bash
+      bash Anaconda3-2024.10-1-Linux-x86_64.sh
+    ```
+     If you add the IdentityFile path to the config file, no need of the long -i command
+    ```bash
+      ssh de-zoomcamp
+    ```
+    ```bash
+      less .bashrc  
+      logout # to logout from the VM
+    ```
+    logout short cut is Ctrl+D
+
+    Press q to quit from the less program.
+    "less" is a pager program that allows you to view long files one screen at a time
+
+    Sidenote: 
+    The ~/.bashrc file is a shell script that is executed whenever a new interactive non-login Bash shell is started. It is used to configure your user-specific shell environment, define aliases, set environment variables, and perform other initialization tasks when you open a terminal window.
+
+    If you dont want to logout, revaluate the .bashrc file using the below command.
+
+    ```bash
+      source .bashrc
+    ```
+    If you selected 'no' while initializing conda use the below command to activate it.
+    ```bash
+        eval "$(/home/priyanka/anaconda3/bin/conda shell.bash hook)"
+    ```
+    But this requires you to enter the command evrytime. To add the conda path to the .bashrc file 
+
+    ```bash
+        /home/priyanka/anaconda3/bin/conda init
+    ```
+
+7. Installing docker and docker-compose on the VM, use apt-get 
+
+    What is apt-get?
+    apt-get is a command-line tool used for managing packages on Debian-based Linux distributions (like Ubuntu, Debian, and Linux Mint). It interacts with the APT (Advanced Package Tool) package management system to install, update, and remove software packages.
+
+    apt-get update → Updates the package list but does not upgrade software.
+
+    apt-get upgrade → Installs the latest versions of all installed packages (after update).
+
+    ```bash
+        sudo apt-get update 
+        sudo apt-get install docker.io
+    ```
+    When you run docker run hello-world you get the permission denied error, so go to the link 
+
+    https://github.com/sindresorhus/guides/blob/main/docker-without-sudo.md
+
+    and follow the steps.
+
+    We are doing this to avoid running sudo everytime we use docker.
+
+    Then install ubuntu
+
+    ```bash
+        docker run -it ubuntu bash
+    ```
+    It opens the shell but use the exit command to return back to the VM.
+
+    Installing docker-compose:
+
+    Goto https://github.com/docker/compose/releases
+
+    Select the link to docker-compose-linux-x86_64
+    https://github.com/docker/compose/releases/download/v2.32.4/docker-compose-linux-x86_64
+
+    and wget.
+
+    Create a new folder bin and add the downloaded file to the bin folder.
+    List the current perimissions of the file using the long list command
+
+    ```bash
+        ls -l <file-name>
+    ```
+
+    Then give the executable permission.
+
+    ```bash
+        chmod +x <file-name>
+    ```
+    The file turns green meaning it is executable.
+
+    We dont want to run docker-compose everytime from the bin folder and hence we add it to the path variable in the ".bashrc" file as below.
+
+    ```bash
+        nano.bashrc
+    ```
+
+
+8. Connect to VS code to access the VM.
+
+    In VS Code install the remote ssh extension > Connect to host > Select the VM > Select the OS and now you are connected to the VM.
+
+9. Go the repository folder, docker_sql folder and run docker-compose up. Install pgcli, pgadmin and postgres:13
+
+    To check if pgcli is installed run
+
+    ```bash
+    pgcli -h localhost -U root -d ny_taxi
+    ```
+
+    To start jupyter notebooks, use the jupyter notebook command.
+
+    To fill the taxi_trip dataset as a csv file, use 
+
+    ```bash
+    gunzip -c yellow_tripdata_2021-01.csv.gz > yellow_tripdata_2021-01.csv
+    ```
+
+    If you use this URL ""https://github.com/DataTalksClub/nyc-tlc-data/releases/download/yellow/yellow_tripdata_2021-01.csv.gz" a gunzip file is downloaded and we need a csv file to use in the jupyter notebook, and hence the extraction.
+
+    Also install psycopg2-binary to avoid engine errors.
+
+10. Installing Terraform:
+    Copy the AMD64 link from the Terraform website and wget in the bin folder to install Terraform. unzip the folder and remove the original zip folder. 
+
+    No we need the GCP creds to run terraform to create infrastructure in the cloud. 
+
+    We use SFTP to connect to the VM and transfer the file from our local machine to the VM.
+
+    ```bash
+        sftp de-zoomcamp
+    ``` 
+
+    Create a new keys directory and run
+
+    ```bash
+        put creds.json
+    ```
+
+    This copies the file from local computer to the VM.
+
+    Now authenticate terraform with GCP:
+
+    Run 
+
+    ```bash
+    export GOOGLE_APPLICATION_CREDENTIALS=~/keys/my_creds.json
+    ```
+
+    ```bash
+    gcloud auth activate-service-account --key-file $GOOGLE_APPLICATION_CREDENTIALS
+    ```
+    SHOWS which service account it was authenticated.
+
+    now navigate to the folder with the terraform files and run terraform plan and apply by changing the parameters in the variables.tf file.
+
+
 
 
 
