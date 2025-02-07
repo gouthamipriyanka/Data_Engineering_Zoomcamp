@@ -36,7 +36,7 @@ Ans: Variable for file is constructed using `{{inputs.taxi}}_tripdata_{{inputs.y
 - 18,324,219
 - 29,430,127
 
-Ans:  
+Ans:24,648,499
 ```SQL
      SELECT COUNT(*) FROM yellow_trips.csv 
      WHERE EXTRACT(YEAR FROM lpep_pickup_datetime) = 2020 ;
