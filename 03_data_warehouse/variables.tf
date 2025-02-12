@@ -6,12 +6,12 @@ variable "region" {
 
 variable "storage_bucket" {
   description = "Storage bucket"
-  default     = "amplified-lamp-449107-s0-terra--bucket"
+  default     = "<bucket-name"
 }
 
 variable "project_id" {
   description = "Project ID"
-  default     = "amplified-lamp-449107-s0"
+  default     = "<project_id>"
 }
 
 variable "BQ_DATASET" {

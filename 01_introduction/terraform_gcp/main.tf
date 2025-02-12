@@ -9,7 +9,7 @@ terraform {
 
 provider "google" {
   # credentials = "./keys/my_creds.json"
-  project = "amplified-lamp-449107-s0"
+  project = "<project-id>"
   region  = var.region
 }
 

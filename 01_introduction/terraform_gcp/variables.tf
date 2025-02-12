@@ -11,7 +11,7 @@ variable "storage_class" {
 
 variable "storage_bucket" {
   description = "Storage bucket"
-  default     = "amplified-lamp-449107-s0-terra--bucket"
+  default     = "<project_id>-terra--bucket"
 }
 
 variable "BQ_DATASET" {
