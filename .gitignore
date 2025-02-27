@@ -8,6 +8,7 @@
 .ipynb_checkpoints/
 
 .ny_taxi_postgres_data/
+03_data_warehouse/yellow_tripdata_2024/
 
 docker\ny_taxi_postgres_datadata\
 01_introduction/docker/ny_taxi_postgres_data/base/1/1247
