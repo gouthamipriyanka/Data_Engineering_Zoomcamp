@@ -6,3 +6,5 @@ OLAP: For analytical purposes
 
 What is data warehouse?
 
+
+
