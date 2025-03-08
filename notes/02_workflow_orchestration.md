@@ -34,3 +34,6 @@ Make sure you connect pg-admin and postgres to the same network or just copy the
 
 ### Hands-On Coding Project: Build Data Pipelines with Kestra in local Postgres and GCP
 
+The flows are present in the week 2 folder.
+
+
