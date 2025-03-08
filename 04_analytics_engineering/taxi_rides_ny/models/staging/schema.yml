@@ -2,12 +2,13 @@ version: 2
 
 sources:
   - name: staging
-    database: "{{ env_var('DBT_DATABASE', 'taxi-rides-ny-339813-412521') }}"
+    database: "{{ env_var('DBT_DATABASE', 'amplified-lamp-449107-s0') }}"
     schema: "{{ env_var('DBT_SCHEMA', 'trips_data_all') }}"
       # loaded_at_field: record_loaded_at
     tables:
       - name: green_tripdata
       - name: yellow_tripdata
+      - name : fhv_tripdata
          # freshness:
            # error_after: {count: 6, period: hour}
 
@@ -194,3 +195,24 @@ models:
             description: Total amount of all tolls paid in trip.
           - name: Total_amount 
             description: The total amount charged to passengers. Does not include cash tips.
+
+    - name: stg_fhv_2019
+      description: "Staging model for FHV data from 2019 with dispatching_base_num filter applied."
+      columns:
+        - name: dispatching_base_num
+          description: "The base number identifying the dispatching company."
+        - name: pickup_datetime
+          description: "The date and time the ride was picked up."
+        - name: dropoff_datetime
+          description: "The date and time the ride was dropped off."
+        - name: fare_amount
+          description: "The fare amount for the ride."
+      # Add any other columns in your model here
+      tests:
+        - not_null:
+            column_name: dispatching_base_num
+        - not_null:
+            column_name: pickup_datetime
+        - not_null:
+            column_name: dropoff_datetime
+        # Optionally add other tests like unique or relationships if needed
