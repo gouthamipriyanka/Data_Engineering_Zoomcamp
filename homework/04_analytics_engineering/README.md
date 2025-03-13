@@ -48,7 +48,7 @@ from {{ source('raw_nyc_tripdata', 'ext_green_taxi' ) }}
 - `select * from myproject.my_nyc_tripdata.ext_green_taxi`
 - `select * from dtc_zoomcamp_2025.raw_nyc_tripdata.green_taxi`
 
-Ans: `select * from myproject.my_nyc_tripdata.ext_green_taxi`
+Ans: - `select * from myproject.raw_nyc_tripdata.ext_green_taxi`
 
 Environment variables are set using the env_var('key','default value') function which has multiple uses. The key must start with DBT. They have a precedence for overriding as shown below
 Order of precedence
